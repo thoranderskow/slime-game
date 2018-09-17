@@ -38,7 +38,7 @@ function drawPlayer2(){
   ctx.fill();
   ctx.closePath();
 }
-function drawPlayer1(){
+function drawPlayer1(player){
   ctx.beginPath();
   ctx.arc(p1x, p1y, pRadius, 0, Math.PI, true);
   ctx.fillStyle= "red";
