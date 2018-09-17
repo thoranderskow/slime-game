@@ -7,6 +7,8 @@ let p2x = canvas.width/4;
 let p2y = canvas.height-150;
 let p1y = canvas.height-150;
 let p1x = canvas.width-(canvas.width/4);
+let dy1 = 0;
+let dy2 = 0;
 let pRadius = 45;
 let rightPressedP1 = false;
 let leftPressedP1 = false;
@@ -14,11 +16,28 @@ let rightPressedP2 = false;
 let leftPressedP2 = false;
 let upPressedP1 = false;
 let upPressedP2 = false;
-let gravity = 2;
+let gravity = 0.1;
 let playerVelocity = -100;
+let jumpPower = 6;
 //GROUND VARS
-let groundy = canvas.height-150;
-
+const groundy = canvas.height-150;
+let onGroundP1 = true;
+let onGroundP2 = true;
+//BALL OBJ
+let ball = {
+  radius : 20,
+  x : canvas.width/2,
+  y : groundy-20,
+  dy : 0,
+  dx : 0,
+}
+function drawBall(){
+ctx.beginPath();
+ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
+ctx.fillStyle = "black";
+ctx.fill();
+ctx.closePath();
+}
 //DRAW FUNCTIONS
 function drawGround(){
   ctx.beginPath();
@@ -70,17 +89,27 @@ function checkMove(){
   if (leftPressedP1 && p1x>pRadius){p1x -= 4};
   if (rightPressedP2 && p2x<canvas.width-pRadius){p2x += 4};
   if (leftPressedP2 && p2x>pRadius){p2x -= 4};
-  if (upPressedP1 && p1y === groundy){p1y += playerVelocity;}
-  else if(p1y != groundy){p1y += gravity;}
-  if (upPressedP2 && p2y === groundy){p2y += playerVelocity;}
-  else if(p2y != groundy){p2y += gravity;}
+}
+function gravityHandler(){
+  dy1 += gravity;
+  p1y += dy1;
+  if(p1y>groundy){p1y = groundy; dy1 = 0; onGroundP1 = true;}
+  else{onGroundP1 = false;}
+  if(upPressedP1 && onGroundP1){dy1 -= jumpPower;}
+  dy2 += gravity;
+  p2y += dy2;
+  if(p2y>groundy){p2y = groundy; dy2 = 0; onGroundP2 = true;}
+  else{onGroundP2 = false;}
+  if(upPressedP2 && onGroundP2){dy2 -= jumpPower;}
 }
 
 function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGround();
+  gravityHandler();
   drawPlayer1();
   drawPlayer2();
+  drawBall();
   checkMove();
   }
 setInterval(draw, 10);
