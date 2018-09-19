@@ -27,17 +27,17 @@ let onGroundP2 = true;
 let ball = {
   radius : 20,
   x : canvas.width/2,
-  y : groundy-20,
+  y : groundy-40,
   dy : 0,
   dx : 0,
+  onGround : true,
 }
-function drawBall(){
-ctx.beginPath();
-ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI*2);
-ctx.fillStyle = "black";
-ctx.fill();
-ctx.closePath();
+let volleyball = new Image();
+volleyball.src="images/volleyball.png";
+volleyball.onload = function(){
+  ctx.drawImage(volleyball, ball.x, ball.y);
 }
+
 //DRAW FUNCTIONS
 function drawGround(){
   ctx.beginPath();
@@ -101,15 +101,20 @@ function gravityHandler(){
   if(p2y>groundy){p2y = groundy; dy2 = 0; onGroundP2 = true;}
   else{onGroundP2 = false;}
   if(upPressedP2 && onGroundP2){dy2 -= jumpPower;}
+  ball.dy += gravity;
+  ball.y += ball.dy;
+  if(ball.y>groundy-40){ball.y = groundy-40; ball.dy = 0; ball.onGround = true;}
+  else{ball.onGround = false;}
 }
 
+//FINAL
 function draw(){
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGround();
   gravityHandler();
+  volleyball.onload();
   drawPlayer1();
   drawPlayer2();
-  drawBall();
   checkMove();
   }
 setInterval(draw, 10);
